@@ -1,51 +1,37 @@
 import { useState } from "react";
-import { searchForShows } from './../api/tvmaze'
+import SearchForm  from "../components/SearchForm";
+import { searchForShows, searchForPeople} from './../api/tvmaze';
+import ActorsGrid from '../components/Actors/ActorsGrid';
+import ShowsGrid from '../components/Shows/ShowsGrid';
 const Home= () =>{
-    const [inputValue , setInputValue] = useState("");
     const [ apiData, setApiData] =useState(null);
     const [apiDataError, setApiDataError] = useState(null);
-    const onInputChange = (ev) => {
-        setInputValue(ev.target.value);
-    };
-
-    const onSearch= async (ev) => {
-        ev.preventDefault();
-    
-    try{
-        setApiDataError(null);
-    const result= await searchForShows(inputValue);
-    setApiData(result);
-    }catch(error) {
-        setApiDataError(error);
-    }
-    };
-
+    const onSearch= async ({q, searchOption}) => {
+    try {
+   setApiDataError(null);
+    if(searchOption === 'shows')
+    {const result= await searchForShows(q);
+    setApiData(result);}
+    else
+    { const result = await searchForPeople(q);
+        setApiData(result);} }
+     catch(error) 
+    { setApiDataError(error);} };
     const renderApiData = () => {
         if(apiDataError) {
-            return <div> Error occured: {apiDataError.message}</div>
-        }
-    
-
-    if(apiData){
-        return apiData.map((data) => (
-            <div key={data.show.id}>{data.show.name}</div>
-        ));
-        };
-
+            return <div> Error occured: {apiDataError.message}</div> }
+    if(apiData?.length === 0)
+    {  return <div>No Results</div>}
+    if(apiData){ return apiData[0].show?(<ShowsGrid shows = {apiData}/>)
+    :(<ActorsGrid actors={apiData}/>); };
     return null;
 };
-
-    return<div>
-    <form onSubmit={onSearch}>
-    <input type="text" value={inputValue} onChange={onInputChange} />
-    <button type="submit">Search</button>
-    </form>
-    <div>
-       
+ 
+ return<div>
+    <SearchForm onSearch= {onSearch}/>
+       <div>
         {renderApiData()}
-        
-    </div>
-    </div>
+     </div></div>
         
 };
 
