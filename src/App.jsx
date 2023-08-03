@@ -1,4 +1,4 @@
-import{ BrowserRouter, Routes, Route } from 'react-router-dom';
+import{ HashRouter, Routes, Route } from 'react-router-dom';
 import {useQuery,useMutation,useQueryClient,QueryClient,QueryClientProvider} from '@tanstack/react-query';
 import Home from "./pages/Home";
 import {GlobalTheme} from './theme';
@@ -14,7 +14,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
     <GlobalTheme>
-    <BrowserRouter>
+    <HashRouter>
     <Routes>
     <Route element={<MainLayout />}>
     <Route path="/" element={ <Home /> }/>
@@ -38,7 +38,7 @@ function App() {
       </Route>
       <Route path="contact-us" element={<Contact />} /> */ }
     </Routes>
-  </BrowserRouter>
+  </HashRouter>
   </GlobalTheme>
   </QueryClientProvider>
   );
